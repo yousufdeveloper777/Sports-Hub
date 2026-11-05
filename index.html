@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SportsHub · All Sports Equipment in One Place</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <span>📞 +92 3332422900 | 🚚 Free Shipping over Rs. 5000</span>
+      <span><a href="account/login.html">Login</a> · <a href="account/signup.html">Sign Up</a></span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="deals.html">Deals</a></li>
+          <li><a href="brands.html">Brands</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>Gear Up for <span class="highlight">Every Sport</span></h1>
+      <p>From cricket pitches to badminton courts — find premium quality equipment for every athlete.</p>
+      <div class="hero-buttons">
+        <a href="shop.html" class="btn primary-btn">Shop Now →</a>
+        <a href="deals.html" class="btn secondary-btn">View Deals</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="categories">
+    <div class="container">
+      <h2 class="section-title">Shop by Sport</h2>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+  </section>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="categories">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title">Featured Products</h2>
+        <a href="shop.html" class="link-underline" style="color:var(--primary);font-weight:600;">View All →</a>
+      </div>
+      <div class="product-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col">
+        <h4>SportsHub</h4>
+        <p>Your one-stop shop for all sports equipment.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="deals.html">Deals</a></li>
+          <li><a href="brands.html">Brands</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="account/login.html">Login</a></li>
+          <li><a href="account/signup.html">Sign Up</a></li>
+          <li><a href="account/orders.html">My Orders</a></li>
+          <li><a href="account/wishlist.html">Wishlist</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>📧 info@sportshub.com</p>
+        <p>📞 +92 3332422900</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- CART MODAL -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Your Cart</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    // Render categories
+    const categories = [
+      { id: "cricket", name: "Cricket", icon: "🏏", desc: "Bats, balls, pads" },
+      { id: "football", name: "Football", icon: "⚽", desc: "Balls, boots" },
+      { id: "badminton", name: "Badminton", icon: "🏸", desc: "Rackets, shuttles" },
+      { id: "basketball", name: "Basketball", icon: "🏀", desc: "Balls, hoops" },
+      { id: "tennis", name: "Tennis", icon: "🎾", desc: "Rackets, balls" },
+      { id: "more", name: "More", icon: "🏓", desc: "Table tennis & more" }
+    ];
+    document.getElementById("categoryGrid").innerHTML = categories.map(c => `
+      <a href="shop.html?sport=${c.id}" class="category-card">
+        <div class="category-icon">${c.icon}</div>
+        <h3>${c.name}</h3>
+        <p>${c.desc}</p>
+      </a>
+    `).join("");
+
+    // Render featured products
+    const featured = PRODUCTS.slice(0, 8);
+    document.getElementById("featuredGrid").innerHTML = featured.map(renderProductCard).join("");
+    attachGlobalProductEvents();
+  </script>
+</body>
+</html>

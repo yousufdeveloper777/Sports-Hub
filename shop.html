@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .shop-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; align-items: start; padding: 2rem 0; }
+    .filters {
+      background: var(--bg-card); border-radius: 16px; padding: 1.5rem;
+      box-shadow: var(--shadow); position: sticky; top: 1rem;
+      max-height: calc(100vh - 2rem); overflow-y: auto;
+    }
+    .filters-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+    .clear-btn { background: none; border: none; color: var(--danger); font-weight: 600; cursor: pointer; }
+    .filter-group { margin-bottom: 1.5rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); }
+    .filter-group:last-child { border-bottom: none; }
+    .filter-group h4 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.7rem; color: var(--text-muted); }
+    .filter-group label { display: flex; justify-content: space-between; padding: 0.35rem 0; font-size: 0.9rem; cursor: pointer; }
+    .filter-group input { margin-right: 0.5rem; accent-color: var(--primary); }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 0.9rem 1.2rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 0.8rem; }
+    .toolbar select { padding: 0.5rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text); cursor: pointer; }
+    .pagination { display: flex; justify-content: center; gap: 0.4rem; margin-top: 2rem; }
+    .pagination button { background: var(--bg-card); border: 1px solid var(--border); padding: 0.5rem 0.9rem; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text); }
+    .pagination button.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .filter-toggle { display: none; background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    @media (max-width: 900px) {
+      .shop-layout { grid-template-columns: 1fr; }
+      .filters { position: fixed; top: 0; left: -320px; width: 300px; height: 100vh; z-index: 1000; border-radius: 0; transition: left 0.3s; max-height: 100vh; }
+      .filters.open { left: 0; }
+      .filter-toggle { display: inline-block; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER (same as index) -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html" class="active">Shop</a></li>
+          <li><a href="deals.html">Deals</a></li>
+          <li><a href="brands.html">Brands</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container shop-layout">
+      <!-- FILTERS -->
+      <aside class="filters" id="filtersPanel">
+        <div class="filters-header">
+          <h3>Filters</h3>
+          <button id="clearFilters" class="clear-btn">Clear All</button>
+        </div>
+
+        <div class="filter-group">
+          <h4>Sport</h4>
+          <label><input type="checkbox" class="filter-sport" value="cricket"> Cricket</label>
+          <label><input type="checkbox" class="filter-sport" value="football"> Football</label>
+          <label><input type="checkbox" class="filter-sport" value="badminton"> Badminton</label>
+          <label><input type="checkbox" class="filter-sport" value="basketball"> Basketball</label>
+          <label><input type="checkbox" class="filter-sport" value="tennis"> Tennis</label>
+        </div>
+
+        <div class="filter-group">
+          <h4>Price Range</h4>
+          <input type="range" id="priceRange" min="0" max="25000" value="25000" step="500" style="width:100%;accent-color:var(--primary);">
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text-muted);margin-top:0.3rem;">
+            <span>Rs. 0</span>
+            <span id="priceValue">Rs. 25,000</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Brand</h4>
+          <label><input type="checkbox" class="filter-brand" value="SS"> SS</label>
+          <label><input type="checkbox" class="filter-brand" value="CA"> CA</label>
+          <label><input type="checkbox" class="filter-brand" value="Nike"> Nike</label>
+          <label><input type="checkbox" class="filter-brand" value="Adidas"> Adidas</label>
+          <label><input type="checkbox" class="filter-brand" value="Yonex"> Yonex</label>
+        </div>
+
+        <div class="filter-group">
+          <h4>Rating</h4>
+          <label><input type="radio" name="rating" value="4"> ⭐⭐⭐⭐ & up</label>
+          <label><input type="radio" name="rating" value="3"> ⭐⭐⭐ & up</label>
+          <label><input type="radio" name="rating" value="0" checked> All</label>
+        </div>
+
+        <div class="filter-group">
+          <h4>Availability</h4>
+          <label><input type="checkbox" id="inStockOnly"> In stock</label>
+          <label><input type="checkbox" id="onSaleOnly"> On sale</label>
+        </div>
+      </aside>
+
+      <!-- PRODUCTS -->
+      <main>
+        <div class="toolbar">
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <button class="filter-toggle" id="filterToggle">☰ Filters</button>
+            <span id="resultCount" style="font-size:0.9rem;color:var(--text-muted);">Loading...</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <label style="font-size:0.9rem;color:var(--text-muted);">Sort by:</label>
+            <select id="sortSelect">
+              <option value="relevance">Relevance</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Best Rating</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-grid" id="productGrid"></div>
+        <div class="pagination" id="pagination"></div>
+      </main>
+    </div>
+  </section>
+
+  <!-- CART MODAL -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Your Cart</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+<!-- SCRIPTS -->
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/wishlist.js"></script>
+<script src="js/search.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/script.js"></script>
+
+  <script>
+    const state = {
+      sports: [], brands: [], maxPrice: 25000, minRating: 0,
+      inStockOnly: false, onSaleOnly: false, sort: "relevance",
+      currentPage: 1, perPage: 8
+    };
+
+    const grid = document.getElementById("productGrid");
+    const resultCount = document.getElementById("resultCount");
+    const pagination = document.getElementById("pagination");
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
+    const sortSelect = document.getElementById("sortSelect");
+
+    function render() {
+      let list = Search.filter(PRODUCTS, state);
+      list = Search.sort(list, state.sort);
+      const total = list.length;
+      const pages = Math.ceil(total / state.perPage);
+      const start = (state.currentPage - 1) * state.perPage;
+      const items = list.slice(start, start + state.perPage);
+
+      grid.innerHTML = items.length
+        ? items.map(renderProductCard).join("")
+        : `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted);"><div style="font-size:3rem;">🔍</div><h3>No products</h3></div>`;
+
+      resultCount.textContent = total ? `Showing ${start+1}–${Math.min(start+state.perPage,total)} of ${total}` : "No results";
+
+      // Pagination
+      let html = "";
+      for (let i = 1; i <= pages; i++) {
+        html += `<button data-page="${i}" class="${i === state.currentPage ? 'active' : ''}">${i}</button>`;
+      }
+      pagination.innerHTML = html;
+      pagination.querySelectorAll("button").forEach(b => {
+        b.addEventListener("click", () => {
+          state.currentPage = +b.dataset.page;
+          render();
+          window.scrollTo({ top: 300, behavior: "smooth" });
+        });
+      });
+
+      attachGlobalProductEvents();
+    }
+
+    // Filter events
+    document.querySelectorAll(".filter-sport").forEach(cb => {
+      cb.addEventListener("change", () => {
+        state.sports = [...document.querySelectorAll(".filter-sport:checked")].map(c => c.value);
+        state.currentPage = 1; render();
+      });
+    });
+    document.querySelectorAll(".filter-brand").forEach(cb => {
+      cb.addEventListener("change", () => {
+        state.brands = [...document.querySelectorAll(".filter-brand:checked")].map(c => c.value);
+        state.currentPage = 1; render();
+      });
+    });
+    priceRange.addEventListener("input", () => {
+      state.maxPrice = +priceRange.value;
+      priceValue.textContent = "Rs. " + (+priceRange.value).toLocaleString();
+      state.currentPage = 1; render();
+    });
+    document.querySelectorAll('input[name="rating"]').forEach(r => {
+      r.addEventListener("change", () => { state.minRating = +r.value; state.currentPage = 1; render(); });
+    });
+    document.getElementById("onSaleOnly").addEventListener("change", e => {
+      state.onSaleOnly = e.target.checked; state.currentPage = 1; render();
+    });
+    document.getElementById("inStockOnly").addEventListener("change", e => {
+      state.inStockOnly = e.target.checked; state.currentPage = 1; render();
+    });
+    sortSelect.addEventListener("change", () => { state.sort = sortSelect.value; render(); });
+    document.getElementById("clearFilters").addEventListener("click", () => {
+      state.sports = []; state.brands = []; state.maxPrice = 25000;
+      state.minRating = 0; state.inStockOnly = false; state.onSaleOnly = false;
+      state.currentPage = 1;
+      document.querySelectorAll(".filter-sport, .filter-brand").forEach(c => c.checked = false);
+      document.querySelector('input[name="rating"][value="0"]').checked = true;
+      document.getElementById("onSaleOnly").checked = false;
+      document.getElementById("inStockOnly").checked = false;
+      priceRange.value = 25000; priceValue.textContent = "Rs. 25,000";
+      render();
+    });
+    document.getElementById("filterToggle").addEventListener("click", () => {
+      document.getElementById("filtersPanel").classList.toggle("open");
+    });
+
+    // Read URL param ?sport=xxx
+    const params = new URLSearchParams(location.search);
+    const sportParam = params.get("sport");
+    if (sportParam && sportParam !== "more") {
+      const cb = document.querySelector(`.filter-sport[value="${sportParam}"]`);
+      if (cb) { cb.checked = true; state.sports = [sportParam]; }
+    }
+
+    render();
+  </script>
+</body>
+</html>

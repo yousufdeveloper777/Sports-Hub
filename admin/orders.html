@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Orders · SportsHub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .admin-layout {
+      display: grid; grid-template-columns: 240px 1fr;
+      gap: 2rem; padding: 2rem 0;
+    }
+    .admin-sidebar {
+      background: var(--dark); color: white;
+      border-radius: 16px; padding: 1.5rem;
+      height: fit-content; position: sticky; top: 1rem;
+    }
+    .admin-brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 1.2rem; font-weight: 800;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #334155;
+      margin-bottom: 1rem;
+    }
+    .admin-nav { display: flex; flex-direction: column; gap: 0.3rem; }
+    .admin-nav a {
+      padding: 0.7rem 0.9rem; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 500;
+      color: #cbd5e1; display: flex;
+      align-items: center; gap: 0.6rem;
+    }
+    .admin-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
+    .admin-nav a.active { background: var(--primary); color: white; }
+
+    .filter-tabs {
+      display: flex; gap: 0.4rem; margin-bottom: 1.2rem; flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 0.5rem 1rem; border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card); color: var(--text-muted);
+      cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      transition: 0.2s;
+    }
+    .filter-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .panel {
+      background: var(--bg-card); border-radius: 16px;
+      padding: 1.5rem; box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.6rem;
+    }
+    .panel-head h3 { font-size: 1.1rem; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.85rem 0.6rem; text-align: left; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+    th { font-weight: 700; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+
+    .status-badge {
+      padding: 0.25rem 0.7rem; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700;
+    }
+    .status-badge.shipped { background: #dbeafe; color: #1e40af; }
+    .status-badge.delivered { background: #d1fae5; color: #065f46; }
+    .status-badge.ordered { background: #fef3c7; color: #92400e; }
+    .status-badge.cancelled { background: #fee2e2; color: #991b1b; }
+
+    .status-select {
+      padding: 0.35rem 0.6rem; border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text);
+      font-size: 0.8rem; cursor: pointer;
+    }
+
+    .empty-orders {
+      text-align: center; padding: 3rem;
+      color: var(--text-muted);
+    }
+    .empty-orders .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    @media (max-width: 800px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { position: static; }
+      .panel { overflow-x: auto; }
+      table { min-width: 700px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span>
+      </a>
+      <nav class="main-nav"><ul>
+        <li><a href="../index.html">Store</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <span style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">👤 Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">Manage Orders</h2>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand"><span>⚙️</span> ADMIN PANEL</div>
+        <nav class="admin-nav">
+          <a href="dashboard.html">📊 Dashboard</a>
+          <a href="products.html">🏷️ Products</a>
+          <a href="orders.html" class="active">📦 Orders</a>
+          <a href="users.html">👥 Users</a>
+          <a href="../index.html">🏠 Back to Store</a>
+        </nav>
+      </aside>
+
+      <main>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>All Orders (<span id="orderCount">0</span>)</h3>
+            <button class="btn secondary-btn" style="padding:0.4rem 0.9rem;font-size:0.85rem;" onclick="clearAllOrders()">🗑️ Clear All</button>
+          </div>
+
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-status="all">All</button>
+            <button class="filter-tab" data-status="Ordered">📋 Ordered</button>
+            <button class="filter-tab" data-status="Shipped">🚚 Shipped</button>
+            <button class="filter-tab" data-status="Delivered">✅ Delivered</button>
+            <button class="filter-tab" data-status="Cancelled">❌ Cancelled</button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub Admin. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/search.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+  <script src="../js/admin.js"></script>
+
+  <script>
+    let currentFilter = "all";
+
+    function renderOrders() {
+      const tbody = document.getElementById("ordersTable");
+      let orders = JSON.parse(localStorage.getItem("sportshub_orders") || "[]");
+      orders = orders.slice().reverse();
+
+      if (currentFilter !== "all") {
+        orders = orders.filter(o => (o.status || "Ordered") === currentFilter);
+      }
+
+      document.getElementById("orderCount").textContent = orders.length;
+
+      if (!orders.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-orders">
+              <div class="icon">📦</div>
+              <p>No orders in this category</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        const date = new Date(o.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+        const status = o.status || "Ordered";
+        const cls = status.toLowerCase();
+        return `
+          <tr>
+            <td><strong>${o.id}</strong></td>
+            <td>${date}</td>
+            <td>${o.items.length} items</td>
+            <td>Rs. ${o.total.toLocaleString()}</td>
+            <td><span class="status-badge ${cls}">${status}</span></td>
+            <td>
+              <select class="status-select" data-id="${o.id}">
+                <option ${status === "Ordered" ? "selected" : ""}>Ordered</option>
+                <option ${status === "Shipped" ? "selected" : ""}>Shipped</option>
+                <option ${status === "Delivered" ? "selected" : ""}>Delivered</option>
+                <option ${status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      tbody.querySelectorAll(".status-select").forEach(sel => {
+        sel.addEventListener("change", (e) => {
+          Admin.updateOrderStatus(e.target.dataset.id, e.target.value);
+          renderOrders();
+        });
+      });
+    }
+
+    document.querySelectorAll(".filter-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentFilter = tab.dataset.status;
+        renderOrders();
+      });
+    });
+
+    window.clearAllOrders = () => {
+      if (!confirm("Delete all orders? This cannot be undone.")) return;
+      localStorage.setItem("sportshub_orders", JSON.stringify([]));
+      renderOrders();
+      showToast("🗑️ All orders cleared");
+    };
+
+    renderOrders();
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem 0;
+    }
+    .blog-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: 0.25s;
+      cursor: pointer;
+    }
+    .blog-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .blog-image {
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--primary), var(--warning));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; color: white;
+    }
+    .blog-content { padding: 1.2rem; }
+    .blog-meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .blog-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+    .blog-excerpt { font-size: 0.9rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav"><ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="deals.html">Deals</a></li>
+        <li><a href="brands.html">Brands</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title mt-3">Sports News & Tips</h2>
+      <div class="blog-grid" id="blogGrid"></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col"><h4>SportsHub</h4><p>Your one-stop shop for all sports equipment.</p></div>
+      <div class="footer-col"><h4>Contact</h4><p>📧 info@sportshub.com</p><p>📞 +92 3332422900</p></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 SportsHub.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Your Cart</h3><button class="close-modal" id="closeModal">&times;</button></div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    const posts = [
+      { icon: "🏏", title: "How to Choose the Perfect Cricket Bat in 2026", meta: "Cricket · 5 min read", excerpt: "Learn about willow types, weight, and balance to pick the right bat." },
+      { icon: "⚽", title: "Top 10 Football Boots for Speed & Control", meta: "Football · 7 min read", excerpt: "Our picks for the fastest wingers and playmakers this season." },
+      { icon: "🏸", title: "Badminton Training: Smash Like a Pro", meta: "Badminton · 6 min read", excerpt: "Master the jump smash with these 5 essential drills." },
+      { icon: "🏀", title: "Basketball Shoes: Court vs Street", meta: "Basketball · 4 min read", excerpt: "Which shoes are best for indoor and outdoor play?" },
+      { icon: "💪", title: "Preventing Sports Injuries: A Complete Guide", meta: "Fitness · 8 min read", excerpt: "Warm-ups, recovery, and gear that reduce injury risk." },
+      { icon: "🎾", title: "Tennis Racket Strings Explained", meta: "Tennis · 5 min read", excerpt: "Polyester, natural gut, or multifilament — which to choose?" }
+    ];
+
+    document.getElementById("blogGrid").innerHTML = posts.map(p => `
+      <article class="blog-card">
+        <div class="blog-image">${p.icon}</div>
+        <div class="blog-content">
+          <div class="blog-meta">${p.meta}</div>
+          <h3 class="blog-title">${p.title}</h3>
+          <p class="blog-excerpt">${p.excerpt}</p>
+        </div>
+      </article>
+    `).join("");
+  </script>
+</body>
+</html>

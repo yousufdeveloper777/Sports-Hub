@@ -1,0 +1,126 @@
+/* ============================================
+   SPORTSHUB - DARK MODE (NAVY THEME)
+   ============================================ */
+
+body.dark-mode {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
+  
+  --dark: #f8fafc;
+  --dark-2: #f1f5f9;
+  
+  --gray: #94a3b8;
+  --gray-light: #1e293b;
+  --border: #1e3a8a;
+  --white: #0a1628;
+  
+  --success: #2dd4bf;
+  --danger: #f87171;
+  --warning: #38bdf8;
+  --accent: #38bdf8;
+  
+  --bg: #0a1628;
+  --bg-card: #0f1e3d;
+  --bg-header: #0f1e3d;
+  
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.4);
+  --shadow: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 16px 30px -10px rgba(0,0,0,0.7);
+}
+
+body.dark-mode .hero {
+  background: linear-gradient(135deg, #0a1628 0%, #020617 100%);
+}
+
+body.dark-mode .product-card,
+body.dark-mode .category-card,
+body.dark-mode .modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+body.dark-mode .product-image { background: #0a1628; }
+
+body.dark-mode .site-header {
+  background: var(--bg-header);
+  border-color: var(--border);
+}
+
+body.dark-mode .modal-header {
+  background: var(--primary-dark);
+}
+
+body.dark-mode .add-cart-btn {
+  background: var(--primary);
+  color: white;
+}
+body.dark-mode .add-cart-btn:hover {
+  background: var(--primary-dark);
+}
+
+body.dark-mode .cart-btn {
+  background: var(--primary);
+  color: white;
+}
+body.dark-mode .cart-btn:hover {
+  background: var(--primary-dark);
+}
+
+body.dark-mode .secondary-btn {
+  border-color: var(--border);
+  color: var(--text);
+}
+body.dark-mode .secondary-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+body.dark-mode .top-bar { background: #020617; }
+body.dark-mode .site-footer { background: #020617; }
+
+body.dark-mode .wishlist-btn {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+body.dark-mode .wishlist-btn:hover { background: #7f1d1d; }
+
+body.dark-mode .filter-chip {
+  background: #1e3a8a;
+  color: #dbeafe;
+}
+
+body.dark-mode .toast {
+  background: var(--primary);
+  color: white;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: #0a1628;
+  color: #f1f5f9;
+  border-color: var(--border);
+}
+
+.dark-toggle {
+  background: transparent;
+  border: 2px solid var(--border);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.dark-toggle:hover {
+  background: var(--gray-light);
+  border-color: var(--primary);
+}

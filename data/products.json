@@ -1,0 +1,9 @@
+{
+  "products": [
+    { "id": 1, "title": "SS Ton Reserve Edition Bat", "sport": "cricket", "brand": "SS", "price": 4500, "oldPrice": 6500, "rating": 4.5, "reviews": 24, "stock": 5 },
+    { "id": 2, "title": "CA Pro 1000 Bat", "sport": "cricket", "brand": "CA", "price": 3200, "oldPrice": 0, "rating": 4.2, "reviews": 18, "stock": 3 },
+    { "id": 3, "title": "Nike Strike Football", "sport": "football", "brand": "Nike", "price": 2800, "oldPrice": 3500, "rating": 4.7, "reviews": 42, "stock": 12 },
+    { "id": 4, "title": "Adidas Predator Boots", "sport": "football", "brand": "Adidas", "price": 8500, "oldPrice": 0, "rating": 4.8, "reviews": 31, "stock": 8 },
+    { "id": 5, "title": "Yonex Astrox 88D Racket", "sport": "badminton", "brand": "Yonex", "price": 12000, "oldPrice": 14000, "rating": 4.9, "reviews": 56, "stock": 4 }
+  ]
+}

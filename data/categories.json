@@ -1,0 +1,9 @@
+{
+  "categories": [
+    { "id": "cricket", "name": "Cricket", "icon": "🏏", "count": 5 },
+    { "id": "football", "name": "Football", "icon": "⚽", "count": 4 },
+    { "id": "badminton", "name": "Badminton", "icon": "🏸", "count": 3 },
+    { "id": "basketball", "name": "Basketball", "icon": "🏀", "count": 2 },
+    { "id": "tennis", "name": "Tennis", "icon": "🎾", "count": 2 }
+  ]
+}

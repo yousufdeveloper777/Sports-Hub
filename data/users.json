@@ -1,0 +1,5 @@
+{
+  "users": [
+    { "id": 1, "name": "Demo User", "email": "demo@sportshub.com", "password": "demo123" }
+  ]
+}

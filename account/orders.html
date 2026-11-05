@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .account-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+    .account-sidebar {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 1rem;
+    }
+    .user-info {
+      text-align: center;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .user-avatar {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary), var(--warning));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      margin: 0 auto 0.7rem;
+      font-weight: 800;
+    }
+    .user-info h3 { font-size: 1rem; }
+    .user-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .account-nav { display: flex; flex-direction: column; gap: 0.3rem; }
+    .account-nav a {
+      padding: 0.7rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .account-nav a:hover { background: var(--gray-light); color: var(--text); }
+    .account-nav a.active { background: var(--primary); color: white; }
+
+    .order-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.3rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+    .order-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .order-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .status-badge.shipped { background: #dbeafe; color: #1e40af; }
+    .status-badge.delivered { background: #d1fae5; color: #065f46; }
+    .status-badge.ordered { background: #fef3c7; color: #92400e; }
+    .status-badge.cancelled { background: #fee2e2; color: #991b1b; }
+
+    @media (max-width: 800px) {
+      .account-layout { grid-template-columns: 1fr; }
+      .account-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span>
+      </a>
+      <nav class="main-nav"><ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <a href="../cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cartCount">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">My Orders</h2>
+    <div class="account-layout">
+      <aside class="account-sidebar">
+        <div class="user-info">
+          <div class="user-avatar" id="avatar">U</div>
+          <h3 id="userName">User</h3>
+          <p id="userEmail">user@email.com</p>
+        </div>
+        <nav class="account-nav">
+          <a href="dashboard.html">📊 Dashboard</a>
+          <a href="orders.html" class="active">📦 My Orders</a>
+          <a href="wishlist.html">❤️ Wishlist</a>
+          <a href="addresses.html">📍 Addresses</a>
+          <a href="#" id="logoutBtn">🚪 Logout</a>
+        </nav>
+      </aside>
+
+      <main>
+        <div id="ordersList"></div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/search.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+
+  <script>
+    const user = Auth.current();
+    if (!user) window.location.href = "login.html";
+
+    document.getElementById("userName").textContent = user.name;
+    document.getElementById("userEmail").textContent = user.email;
+    document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
+
+    const orders = JSON.parse(localStorage.getItem("sportshub_orders") || "[]");
+    const container = document.getElementById("ordersList");
+
+    if (!orders.length) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:4rem 1rem;background:var(--bg-card);border-radius:16px;box-shadow:var(--shadow);color:var(--text-muted);">
+          <div style="font-size:4rem;">📦</div>
+          <h3 style="margin:1rem 0 0.4rem;color:var(--text);">No orders yet</h3>
+          <p>You haven't placed any order.</p>
+          <a href="../shop.html" class="btn primary-btn mt-3">Start Shopping →</a>
+        </div>
+      `;
+    } else {
+      container.innerHTML = orders.slice().reverse().map(o => {
+        const date = new Date(o.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+        const status = o.status || "Ordered";
+        const cls = status.toLowerCase();
+        return `
+          <div class="order-card">
+            <div class="order-head">
+              <div>
+                <strong style="font-size:1.05rem;">${o.id}</strong>
+                <div style="color:var(--text-muted);font-size:0.85rem;">Placed on ${date}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.8rem;">
+                <span class="status-badge ${cls}">${status}</span>
+                <a href="../track.html" class="btn secondary-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;">Track</a>
+              </div>
+            </div>
+            <div class="order-items-list">
+              ${o.items.map(item => {
+                const p = PRODUCTS.find(x => x.id === item.id);
+                if (!p) return "";
+                return `
+                  <div class="order-item">
+                    <span>${p.emoji} ${p.title} × ${item.qty}</span>
+                    <span>Rs. ${(p.price * item.qty).toLocaleString()}</span>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+            <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:0.8rem;display:flex;justify-content:space-between;font-weight:800;">
+              <span>Total</span>
+              <span>Rs. ${o.total.toLocaleString()}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      if (confirm("Logout?")) Auth.logout();
+    });
+  </script>
+</body>
+</html>

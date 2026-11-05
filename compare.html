@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Products · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .compare-select {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin: 2rem 0;
+    }
+    .compare-select select {
+      padding: 0.8rem; border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; background: var(--bg-card); color: var(--text);
+    }
+    .compare-table {
+      background: var(--bg-card); border-radius: 16px; overflow: hidden;
+      box-shadow: var(--shadow); margin-bottom: 3rem;
+    }
+    .compare-table table { width: 100%; border-collapse: collapse; }
+    .compare-table th, .compare-table td {
+      padding: 1rem; text-align: left; border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .compare-table th { background: var(--gray-light); font-weight: 700; }
+    .compare-table .prod-emoji { font-size: 2rem; }
+    .compare-table .label { color: var(--text-muted); font-weight: 600; width: 180px; }
+    @media (max-width: 700px) {
+      .compare-table { overflow-x: auto; }
+      .compare-table table { min-width: 600px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav"><ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">Compare Products</h2>
+    <p style="color:var(--text-muted);">Choose up to 3 products to compare side-by-side.</p>
+
+    <div class="compare-select">
+      <select id="prod1"></select>
+      <select id="prod2"></select>
+      <select id="prod3"></select>
+    </div>
+
+    <div class="compare-table" id="compareTable"></div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col"><h4>SportsHub</h4><p>Your one-stop shop for all sports equipment.</p></div>
+      <div class="footer-col"><h4>Contact</h4><p>📧 info@sportshub.com</p></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 SportsHub.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Your Cart</h3><button class="close-modal" id="closeModal">&times;</button></div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    const options = PRODUCTS.map(p => `<option value="${p.id}">${p.emoji} ${p.title}</option>`).join("");
+
+    ["prod1", "prod2", "prod3"].forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.innerHTML = `<option value="">-- Select Product ${i+1} --</option>` + options;
+      el.addEventListener("change", renderCompare);
+    });
+
+    // Default first 3 products
+    document.getElementById("prod1").value = 1;
+    document.getElementById("prod2").value = 2;
+    document.getElementById("prod3").value = 3;
+    renderCompare();
+
+    function renderCompare() {
+      const ids = ["prod1", "prod2", "prod3"].map(id => +document.getElementById(id).value).filter(Boolean);
+      const items = ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+
+      if (!items.length) {
+        document.getElementById("compareTable").innerHTML = '<p style="padding:2rem;text-align:center;color:var(--text-muted);">Select products to compare.</p>';
+        return;
+      }
+
+      const rows = [
+        { label: "Image", render: p => `<span class="prod-emoji">${p.emoji}</span>` },
+        { label: "Title", render: p => `<strong>${p.title}</strong>` },
+        { label: "Brand", render: p => p.brand },
+        { label: "Sport", render: p => p.sport },
+        { label: "Price", render: p => `<span style="color:var(--primary);font-weight:800;">Rs. ${p.price.toLocaleString()}</span>` },
+        { label: "Old Price", render: p => p.oldPrice ? `Rs. ${p.oldPrice.toLocaleString()}` : "—" },
+        { label: "Rating", render: p => `⭐ ${p.rating} (${p.reviews})` },
+        { label: "Stock", render: p => p.stock > 0 ? `✅ ${p.stock} left` : "❌ Out of stock" },
+        { label: "Action", render: p => `<button class="btn primary-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;" onclick="Cart.add(${p.id});showToast('✅ Added!')">Add to Cart</button>` }
+      ];
+
+      document.getElementById("compareTable").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              ${items.map(p => `<th>${p.emoji} ${p.title}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td class="label">${r.label}</td>
+                ${items.map(p => `<td>${r.render(p)}</td>`).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+  </script>
+</body>
+</html>

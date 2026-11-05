@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 3rem 0; }
+    .gallery-main { background: var(--gray-light); border-radius: 20px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 10rem; }
+    .gallery-thumbs { display: flex; gap: 0.6rem; margin-top: 1rem; }
+    .gallery-thumbs div { width: 70px; height: 70px; border-radius: 12px; background: var(--gray-light); display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; border: 2px solid transparent; }
+    .gallery-thumbs div:hover, .gallery-thumbs div.active { border-color: var(--primary); }
+    .product-detail h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .product-detail .price { font-size: 2rem; font-weight: 800; color: var(--primary); margin: 1rem 0; }
+    .product-detail .price .old { font-size: 1.2rem; color: var(--text-muted); text-decoration: line-through; margin-left: 0.6rem; }
+    .variants { margin: 1.5rem 0; }
+    .variants h4 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.6rem; color: var(--text-muted); }
+    .variant-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .variant-btn { padding: 0.5rem 1rem; border: 1.5px solid var(--border); background: var(--bg-card); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text); }
+    .variant-btn.active { border-color: var(--primary); color: var(--primary); }
+    .qty-selector { display: flex; align-items: center; gap: 0.5rem; margin: 1.5rem 0; }
+    .qty-selector button { width: 36px; height: 36px; border: 1px solid var(--border); background: var(--bg-card); border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
+    .qty-selector input { width: 50px; text-align: center; border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem; }
+    .detail-actions { display: flex; gap: 0.8rem; margin: 1.5rem 0; flex-wrap: wrap; }
+    .tabs { margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+    .tab-buttons { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .tab-buttons button { background: none; border: none; padding: 0.5rem 0; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+    .tab-buttons button.active { color: var(--primary); border-color: var(--primary); }
+    @media (max-width: 800px) { .product-detail { grid-template-columns: 1fr; gap: 1.5rem; } .gallery-main { font-size: 6rem; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="deals.html">Deals</a></li>
+          <li><a href="brands.html">Brands</a></li>
+        </ul>
+      </nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" id="productDetail"></div>
+
+  <div class="container">
+    <h2 class="section-title mt-3">You May Also Like</h2>
+    <div class="product-grid" id="relatedGrid"></div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col"><h4>SportsHub</h4><p>Your one-stop shop for all sports equipment.</p></div>
+      <div class="footer-col"><h4>Contact</h4><p>📧 info@sportshub.com</p><p>📞 +92 3332422900</p></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 SportsHub.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Your Cart</h3><button class="close-modal" id="closeModal">&times;</button></div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const id = +params.get("id") || 1;
+    const p = PRODUCTS.find(x => x.id === id) || PRODUCTS[0];
+
+    document.getElementById("productDetail").innerHTML = `
+      <div class="product-detail">
+        <div>
+          <div class="gallery-main">${p.emoji}</div>
+          <div class="gallery-thumbs">
+            <div class="active">${p.emoji}</div>
+            <div>${p.emoji}</div>
+            <div>${p.emoji}</div>
+            <div>${p.emoji}</div>
+          </div>
+        </div>
+        <div>
+          <span class="product-sport">${p.sport}</span>
+          <h1>${p.title}</h1>
+          <div class="product-rating">⭐ ${p.rating} <span>(${p.reviews} reviews)</span></div>
+          <div class="price">
+            Rs. ${p.price.toLocaleString()}
+            ${p.oldPrice ? `<span class="old">Rs. ${p.oldPrice.toLocaleString()}</span>` : ""}
+          </div>
+          <p style="color:var(--text-muted);">${p.description}</p>
+
+          <div class="variants">
+            <h4>Size</h4>
+            <div class="variant-options">
+              ${(p.sizes || ["Standard"]).map((s, i) => `<button class="variant-btn ${i === 0 ? "active" : ""}" data-size="${s}">${s}</button>`).join("")}
+            </div>
+          </div>
+
+          <div class="qty-selector">
+            <button id="qtyMinus">−</button>
+            <input type="number" id="qtyInput" value="1" min="1">
+            <button id="qtyPlus">+</button>
+            <span style="margin-left:1rem;color:var(--success);font-weight:600;">✅ In stock (${p.stock})</span>
+          </div>
+
+          <div class="detail-actions">
+            <button class="btn primary-btn" id="addToCartBtn">🛒 Add to Cart</button>
+            <button class="btn dark-btn" id="buyNowBtn">Buy Now</button>
+            <button class="btn secondary-btn" id="wishBtn">${Wishlist.has(p.id) ? "❤️ Wishlisted" : "🤍 Wishlist"}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-buttons">
+          <button class="active" data-tab="desc">Description</button>
+          <button data-tab="specs">Specs</button>
+          <button data-tab="reviews">Reviews</button>
+        </div>
+        <div class="tab-content" id="tabDesc">
+          <p>${p.description} Premium quality product from ${p.brand}, ideal for ${p.sport} enthusiasts. Built to last with superior materials.</p>
+        </div>
+      </div>
+    `;
+
+    // Related products
+    const related = PRODUCTS.filter(x => x.sport === p.sport && x.id !== p.id).slice(0, 4);
+    document.getElementById("relatedGrid").innerHTML = related.map(renderProductCard).join("");
+    attachGlobalProductEvents();
+
+    // Variants
+    document.querySelectorAll(".variant-btn").forEach(b => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll(".variant-btn").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+      });
+    });
+
+    // Qty
+    const qtyInput = document.getElementById("qtyInput");
+    document.getElementById("qtyMinus").addEventListener("click", () => qtyInput.value = Math.max(1, +qtyInput.value - 1));
+    document.getElementById("qtyPlus").addEventListener("click", () => qtyInput.value = +qtyInput.value + 1);
+
+    // Add to cart
+    document.getElementById("addToCartBtn").addEventListener("click", () => {
+      Cart.add(p.id, +qtyInput.value);
+      showToast("✅ Added to cart!");
+    });
+
+    document.getElementById("buyNowBtn").addEventListener("click", () => {
+      Cart.add(p.id, +qtyInput.value);
+      window.location.href = "checkout.html";
+    });
+
+    document.getElementById("wishBtn").addEventListener("click", (e) => {
+      const added = Wishlist.toggle(p.id);
+      e.target.textContent = added ? "❤️ Wishlisted" : "🤍 Wishlist";
+      showToast(added ? "❤️ Added" : "💔 Removed");
+    });
+
+    // Tabs
+    document.querySelectorAll("[data-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-buttons button").forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

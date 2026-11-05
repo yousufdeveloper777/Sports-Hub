@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .auth-wrap {
+      max-width: 440px;
+      margin: 3rem auto;
+      padding: 2.5rem;
+      background: var(--bg-card);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    .auth-wrap h2 { font-size: 1.8rem; margin-bottom: 0.4rem; text-align: center; }
+    .auth-wrap .sub { text-align: center; color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .form-group input {
+      width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 0.95rem; background: var(--bg-card);
+      color: var(--text); font-family: inherit;
+    }
+    .form-group input:focus { outline: none; border-color: var(--primary); }
+    .form-group small { font-size: 0.75rem; color: var(--text-muted); }
+    .auth-switch {
+      text-align: center; margin-top: 1.5rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted);
+    }
+    .auth-switch a { color: var(--primary); font-weight: 700; }
+    .checkbox-row {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.85rem; color: var(--text-muted); margin: 1rem 0;
+    }
+    .checkbox-row input { margin-top: 3px; accent-color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span>
+      </a>
+      <nav class="main-nav"><ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <a href="../cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cartCount">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="auth-wrap">
+      <h2>Create Account ✨</h2>
+      <p class="sub">Join SportsHub and start shopping</p>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="name" required placeholder="Ahmed Raza">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" required placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" required minlength="6" placeholder="At least 6 characters">
+          <small>Must be at least 6 characters</small>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="confirm" required placeholder="Re-enter password">
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="terms" required>
+          <label for="terms" style="font-weight:400;cursor:pointer;">
+            I agree to the <a href="#" style="color:var(--primary);">Terms of Service</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn primary-btn" style="width:100%;">Create Account →</button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/search.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+
+      if (password !== confirm) {
+        showToast("❌ Passwords do not match!");
+        return;
+      }
+
+      const result = Auth.signup(name, email, password);
+      if (result.success) {
+        showToast("✅ Account created! Redirecting...");
+        setTimeout(() => window.location.href = "dashboard.html", 1000);
+      } else {
+        showToast("❌ " + result.error);
+      }
+    });
+  </script>
+</body>
+</html>

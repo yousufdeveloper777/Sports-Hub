@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brands · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.2rem;
+      padding: 2rem 0;
+    }
+    .brand-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: 0.25s;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .brand-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+    .brand-logo {
+      font-size: 2.5rem; font-weight: 900; letter-spacing: -1px;
+      color: var(--primary); margin-bottom: 0.6rem;
+    }
+    .brand-card h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .brand-card p { color: var(--text-muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav"><ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="deals.html">Deals</a></li>
+        <li><a href="brands.html" class="active">Brands</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title mt-3">Shop by Brand</h2>
+      <div class="brands-grid" id="brandsGrid"></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col"><h4>SportsHub</h4><p>Your one-stop shop for all sports equipment.</p></div>
+      <div class="footer-col"><h4>Contact</h4><p>📧 info@sportshub.com</p><p>📞 +92 3332422900</p></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 SportsHub.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Your Cart</h3><button class="close-modal" id="closeModal">&times;</button></div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    const brands = [
+      { name: "Nike", desc: "Global sports giant", logo: "NIKE" },
+      { name: "Adidas", desc: "German engineering", logo: "ADIDAS" },
+      { name: "Yonex", desc: "Badminton specialists", logo: "YONEX" },
+      { name: "SS", desc: "Cricket excellence", logo: "SS" },
+      { name: "CA", desc: "Pakistani cricket gear", logo: "CA" }
+    ];
+
+    document.getElementById("brandsGrid").innerHTML = brands.map(b => {
+      const count = PRODUCTS.filter(p => p.brand === b.name).length;
+      return `
+        <a href="shop.html" class="brand-card" onclick="localStorage.setItem('brandFilter','${b.name}')">
+          <div class="brand-logo">${b.logo}</div>
+          <h3>${b.name}</h3>
+          <p>${b.desc} · ${count} products</p>
+        </a>
+      `;
+    }).join("");
+  </script>
+</body>
+</html>

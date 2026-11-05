@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .track-wrap { max-width: 700px; margin: 3rem auto; padding: 2rem; background: var(--bg-card); border-radius: 20px; box-shadow: var(--shadow); }
+    .track-input { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+    .track-input input { flex: 1; padding: 0.9rem 1rem; border: 1.5px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--bg-card); color: var(--text); }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ""; position: absolute; left: 10px; top: 0; bottom: 0;
+      width: 3px; background: var(--border); border-radius: 3px;
+    }
+    .timeline-step {
+      position: relative; padding-bottom: 2rem;
+    }
+    .timeline-step::before {
+      content: ""; position: absolute; left: -2rem; top: 4px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--gray-light); border: 3px solid var(--border);
+      z-index: 1;
+    }
+    .timeline-step.done::before { background: var(--success); border-color: var(--success); }
+    .timeline-step.active::before { background: var(--primary); border-color: var(--primary); animation: pulse 1.5s infinite; }
+    .timeline-step h4 { margin-bottom: 0.2rem; }
+    .timeline-step p { color: var(--text-muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo"><span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span></div>
+      <nav class="main-nav"><ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <button class="cart-btn" id="cartButton">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">Track Your Order</h2>
+    <div class="track-wrap">
+      <div class="track-input">
+        <input id="orderId" placeholder="Enter order ID (e.g., SH-1234567890)">
+        <button class="btn primary-btn" id="trackBtn">Track</button>
+      </div>
+      <div id="trackResult"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col"><h4>SportsHub</h4><p>Your one-stop shop for all sports equipment.</p></div>
+      <div class="footer-col"><h4>Contact</h4><p>📧 info@sportshub.com</p></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 SportsHub.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-header"><h3>Your Cart</h3><button class="close-modal" id="closeModal">&times;</button></div>
+      <div class="modal-body" id="cartItems"></div>
+      <div class="modal-footer">
+        <p>Total: <strong id="cartTotal">Rs. 0</strong></p>
+        <a href="checkout.html" class="btn primary-btn">Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/script.js"></script>
+
+  <script>
+    document.getElementById("trackBtn").addEventListener("click", () => {
+      const id = document.getElementById("orderId").value.trim();
+      if (!id) { showToast("⚠️ Please enter an order ID"); return; }
+
+      const orders = JSON.parse(localStorage.getItem("sportshub_orders") || "[]");
+      const order = orders.find(o => o.id === id);
+
+      const result = document.getElementById("trackResult");
+
+      if (!order) {
+        // Demo mode - show fake timeline
+        result.innerHTML = `
+          <div style="background:rgba(59,130,246,0.08);padding:1rem;border-radius:10px;margin-bottom:1.5rem;color:var(--primary);font-weight:600;">
+            📦 Order <strong>${id}</strong> · Demo tracking
+          </div>
+          ${renderTimeline(2)}
+        `;
+        return;
+      }
+
+      result.innerHTML = `
+        <div style="background:rgba(16,185,129,0.08);padding:1rem;border-radius:10px;margin-bottom:1.5rem;color:var(--success);font-weight:600;">
+          ✅ Order found: <strong>${order.id}</strong> · Rs. ${order.total.toLocaleString()}
+        </div>
+        ${renderTimeline(1)}
+      `;
+    });
+
+    function renderTimeline(currentStep) {
+      const steps = [
+        { title: "Order Placed", desc: "We've received your order", icon: "📝" },
+        { title: "Packed", desc: "Your items are packed and ready", icon: "📦" },
+        { title: "Shipped", desc: "On the way to your address", icon: "🚚" },
+        { title: "Delivered", desc: "Enjoy your gear!", icon: "🏠" }
+      ];
+
+      return `
+        <div class="timeline">
+          ${steps.map((s, i) => {
+            let cls = "";
+            if (i < currentStep) cls = "done";
+            else if (i === currentStep) cls = "active";
+            return `
+              <div class="timeline-step ${cls}">
+                <h4>${s.icon} ${s.title}</h4>
+                <p>${s.desc}</p>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    // Auto-fill with last order if exists
+    const orders = JSON.parse(localStorage.getItem("sportshub_orders") || "[]");
+    if (orders.length) {
+      document.getElementById("orderId").value = orders[orders.length - 1].id;
+    }
+  </script>
+</body>
+</html>

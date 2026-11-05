@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Products · SportsHub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .admin-layout {
+      display: grid; grid-template-columns: 240px 1fr;
+      gap: 2rem; padding: 2rem 0;
+    }
+    .admin-sidebar {
+      background: var(--dark); color: white;
+      border-radius: 16px; padding: 1.5rem;
+      height: fit-content; position: sticky; top: 1rem;
+    }
+    .admin-brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 1.2rem; font-weight: 800;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #334155;
+      margin-bottom: 1rem;
+    }
+    .admin-nav { display: flex; flex-direction: column; gap: 0.3rem; }
+    .admin-nav a {
+      padding: 0.7rem 0.9rem; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 500;
+      color: #cbd5e1; display: flex;
+      align-items: center; gap: 0.6rem;
+    }
+    .admin-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
+    .admin-nav a.active { background: var(--primary); color: white; }
+
+    .panel {
+      background: var(--bg-card); border-radius: 16px;
+      padding: 1.5rem; box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.6rem;
+    }
+    .panel-head h3 { font-size: 1.1rem; }
+
+    .search-box {
+      padding: 0.6rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 0.9rem;
+      background: var(--bg-card); color: var(--text);
+      min-width: 220px;
+    }
+    .search-box:focus { outline: none; border-color: var(--primary); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.85rem 0.6rem; text-align: left; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+    th { font-weight: 700; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+    tr:hover { background: rgba(59,130,246,0.03); }
+
+    .stock-badge {
+      padding: 0.2rem 0.6rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .stock-badge.in { background: #d1fae5; color: #065f46; }
+    .stock-badge.out { background: #fee2e2; color: #991b1b; }
+    .stock-badge.low { background: #fef3c7; color: #92400e; }
+
+    @media (max-width: 800px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { position: static; }
+      .panel { overflow-x: auto; }
+      table { min-width: 700px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span>
+      </a>
+      <nav class="main-nav"><ul>
+        <li><a href="../index.html">Store</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <span style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">👤 Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">Manage Products</h2>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-brand"><span>⚙️</span> ADMIN PANEL</div>
+        <nav class="admin-nav">
+          <a href="dashboard.html">📊 Dashboard</a>
+          <a href="products.html" class="active">🏷️ Products</a>
+          <a href="orders.html">📦 Orders</a>
+          <a href="users.html">👥 Users</a>
+          <a href="../index.html">🏠 Back to Store</a>
+        </nav>
+      </aside>
+
+      <main>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>All Products (<span id="productCount">0</span>)</h3>
+            <input class="search-box" id="productSearch" placeholder="🔍 Search products...">
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Product</th>
+                  <th>Sport</th>
+                  <th>Brand</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub Admin. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/search.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+  <script src="../js/admin.js"></script>
+
+  <script>
+    function renderProducts(filter = "") {
+      const tbody = document.getElementById("productsTable");
+      const list = filter
+        ? PRODUCTS.filter(p =>
+            p.title.toLowerCase().includes(filter.toLowerCase()) ||
+            p.brand.toLowerCase().includes(filter.toLowerCase()) ||
+            p.sport.toLowerCase().includes(filter.toLowerCase())
+          )
+        : PRODUCTS;
+
+      document.getElementById("productCount").textContent = list.length;
+
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">No products found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        let stockCls = "in";
+        if (p.stock === 0) stockCls = "out";
+        else if (p.stock < 5) stockCls = "low";
+        return `
+          <tr>
+            <td>#${p.id}</td>
+            <td><span style="font-size:1.3rem;">${p.emoji}</span> <strong>${p.title}</strong></td>
+            <td style="text-transform:capitalize;">${p.sport}</td>
+            <td>${p.brand}</td>
+            <td>Rs. ${p.price.toLocaleString()}</td>
+            <td><span class="stock-badge ${stockCls}">${p.stock > 0 ? p.stock + " left" : "Out of stock"}</span></td>
+            <td>⭐ ${p.rating}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    document.getElementById("productSearch").addEventListener("input", (e) => {
+      renderProducts(e.target.value);
+    });
+
+    renderProducts();
+  </script>
+</body>
+</html>

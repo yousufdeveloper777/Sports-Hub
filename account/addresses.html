@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Addresses · SportsHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .account-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+    .account-sidebar {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 1rem;
+    }
+    .user-info {
+      text-align: center;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .user-avatar {
+      width: 70px; height: 70px;
+      background: linear-gradient(135deg, var(--primary), var(--warning));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; color: white;
+      margin: 0 auto 0.7rem; font-weight: 800;
+    }
+    .user-info h3 { font-size: 1rem; }
+    .user-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .account-nav { display: flex; flex-direction: column; gap: 0.3rem; }
+    .account-nav a {
+      padding: 0.7rem 0.9rem; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .account-nav a:hover { background: var(--gray-light); color: var(--text); }
+    .account-nav a.active { background: var(--primary); color: white; }
+
+    .address-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .address-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.3rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      border: 2px solid transparent;
+      transition: 0.2s;
+    }
+    .address-card.default { border-color: var(--primary); }
+    .address-card .default-tag {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--primary); color: white;
+      font-size: 0.7rem; padding: 0.2rem 0.6rem;
+      border-radius: 20px; font-weight: 700;
+    }
+    .address-card h4 { margin-bottom: 0.4rem; font-size: 1rem; }
+    .address-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.8rem; }
+    .address-actions {
+      display: flex; gap: 0.5rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+    .address-actions button {
+      background: none; border: none;
+      font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; padding: 0.3rem 0.5rem;
+      border-radius: 6px;
+    }
+    .address-actions .edit { color: var(--primary); }
+    .address-actions .delete { color: var(--danger); }
+    .address-actions .set-default { color: var(--success); }
+
+    .add-address-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      min-height: 180px;
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .add-address-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(59,130,246,0.04);
+    }
+
+    /* Modal for address form */
+    .modal form { padding: 0; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 0.95rem; background: var(--bg-card);
+      color: var(--text); font-family: inherit;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 800px) {
+      .account-layout { grid-template-columns: 1fr; }
+      .account-sidebar { position: static; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span> SPORTS<span class="logo-accent">HUB</span>
+      </a>
+      <nav class="main-nav"><ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+      </ul></nav>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="dark-toggle" id="darkToggle">🌙</button>
+        <a href="../cart.html" class="cart-btn">🛒 Cart <span class="cart-count" id="cartCount">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title mt-3">My Addresses 📍</h2>
+    <div class="account-layout">
+      <aside class="account-sidebar">
+        <div class="user-info">
+          <div class="user-avatar" id="avatar">U</div>
+          <h3 id="userName">User</h3>
+          <p id="userEmail">user@email.com</p>
+        </div>
+        <nav class="account-nav">
+          <a href="dashboard.html">📊 Dashboard</a>
+          <a href="orders.html">📦 My Orders</a>
+          <a href="wishlist.html">❤️ Wishlist</a>
+          <a href="addresses.html" class="active">📍 Addresses</a>
+          <a href="#" id="logoutBtn">🚪 Logout</a>
+        </nav>
+      </aside>
+
+      <main>
+        <div class="address-grid" id="addressGrid"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL FOR ADD/EDIT -->
+  <div class="modal-overlay" id="addressModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Address</h3>
+        <button class="close-modal" id="closeAddressModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addressForm">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input required id="aName" placeholder="Ahmed Raza">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input required id="aPhone" placeholder="+92 3XX XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Address Line</label>
+            <textarea required id="aAddress" rows="2" placeholder="House #, Street, Area"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <select required id="aCity">
+                <option value="">Select City</option>
+                <option>Karachi</option><option>Lahore</option><option>Islamabad</option>
+                <option>Rawalpindi</option><option>Faisalabad</option><option>Multan</option><option>Peshawar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Postal Code</label>
+              <input id="aPostal" placeholder="54000">
+            </div>
+          </div>
+          <button type="submit" class="btn primary-btn" style="width:100%;">Save Address</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 SportsHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/products.js"></script>
+  <script src="../js/cart.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/search.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/script.js"></script>
+
+  <script>
+    const user = Auth.current();
+    if (!user) window.location.href = "login.html";
+
+    document.getElementById("userName").textContent = user.name;
+    document.getElementById("userEmail").textContent = user.email;
+    document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
+
+    const ADDRESS_KEY = "sportshub_addresses_" + user.id;
+    let addresses = JSON.parse(localStorage.getItem(ADDRESS_KEY) || "[]");
+    let editingId = null;
+
+    function saveAddresses() {
+      localStorage.setItem(ADDRESS_KEY, JSON.stringify(addresses));
+    }
+
+    function renderAddresses() {
+      const grid = document.getElementById("addressGrid");
+
+      let html = addresses.map(a => `
+        <div class="address-card ${a.isDefault ? 'default' : ''}">
+          ${a.isDefault ? '<span class="default-tag">DEFAULT</span>' : ''}
+          <h4>${a.name}</h4>
+          <p>${a.phone}<br>${a.address}<br>${a.city}${a.postal ? ' - ' + a.postal : ''}</p>
+          <div class="address-actions">
+            <button class="edit" onclick="editAddress(${a.id})">✏️ Edit</button>
+            ${!a.isDefault ? `<button class="set-default" onclick="setDefault(${a.id})">✓ Set Default</button>` : ''}
+            <button class="delete" onclick="deleteAddress(${a.id})">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join("");
+
+      html += `
+        <button class="add-address-btn" onclick="openAddressModal()">
+          <div>
+            <div style="font-size:2rem;">➕</div>
+            <div>Add New Address</div>
+          </div>
+        </button>
+      `;
+
+      grid.innerHTML = html;
+    }
+
+    // Modal
+    const modal = document.getElementById("addressModal");
+    const form = document.getElementById("addressForm");
+
+    function openAddressModal(editId = null) {
+      editingId = editId;
+      document.getElementById("modalTitle").textContent = editId ? "Edit Address" : "Add New Address";
+
+      if (editId) {
+        const a = addresses.find(x => x.id === editId);
+        document.getElementById("aName").value = a.name;
+        document.getElementById("aPhone").value = a.phone;
+        document.getElementById("aAddress").value = a.address;
+        document.getElementById("aCity").value = a.city;
+        document.getElementById("aPostal").value = a.postal || "";
+      } else {
+        form.reset();
+      }
+
+      modal.classList.add("open");
+    }
+
+    document.getElementById("closeAddressModal").addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById("aName").value.trim(),
+        phone: document.getElementById("aPhone").value.trim(),
+        address: document.getElementById("aAddress").value.trim(),
+        city: document.getElementById("aCity").value,
+        postal: document.getElementById("aPostal").value.trim()
+      };
+
+      if (editingId) {
+        const idx = addresses.findIndex(a => a.id === editingId);
+        addresses[idx] = { ...addresses[idx], ...data };
+        showToast("✅ Address updated!");
+      } else {
+        addresses.push({
+          id: Date.now(),
+          ...data,
+          isDefault: addresses.length === 0
+        });
+        showToast("✅ Address added!");
+      }
+
+      saveAddresses();
+      renderAddresses();
+      modal.classList.remove("open");
+    });
+
+    window.editAddress = (id) => openAddressModal(id);
+
+    window.deleteAddress = (id) => {
+      if (!confirm("Delete this address?")) return;
+      addresses = addresses.filter(a => a.id !== id);
+      if (addresses.length && !addresses.some(a => a.isDefault)) {
+        addresses[0].isDefault = true;
+      }
+      saveAddresses();
+      renderAddresses();
+      showToast("🗑️ Address deleted");
+    };
+
+    window.setDefault = (id) => {
+      addresses.forEach(a => a.isDefault = a.id === id);
+      saveAddresses();
+      renderAddresses();
+      showToast("✅ Default address updated");
+    };
+
+    window.openAddressModal = openAddressModal;
+
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      if (confirm("Logout?")) Auth.logout();
+    });
+
+    renderAddresses();
+  </script>
+</body>
+</html>
